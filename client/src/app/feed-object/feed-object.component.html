@@ -11,7 +11,6 @@
         </span>
       </mat-card-subtitle>
     </mat-card-header>
-    <img mat-card-image [src]="getImageSource()">
     <div fxLayoutAlign="center" class="mediaActions">
       <button mat-icon-button color="primary" [disabled]="index <= 0 "
       (click)="index >= 0 ? decrementeIndex() : null">
@@ -22,6 +21,7 @@
         <mat-icon>keyboard_arrow_right</mat-icon>
       </button>
     </div>
+    <img mat-card-image [src]="getImageSource()">
     <mat-card-content>
       <p>
         {{ feedObject.content }}
