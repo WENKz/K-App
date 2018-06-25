@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+// import { HttpClient } from '@angular/common/http';
 import { FeedObject } from '../_models';
 import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class FeedService {
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   get(): Observable<FeedObject[]> {
     const feedObjects: FeedObject[] = [];
@@ -40,6 +40,9 @@ export class FeedService {
       pin: false,
       isFacebook: false,
       medias: [{
+        url: 'http://static.videogular.com/assets/videos/videogular.mp4',
+        type: 'video',
+      }, {
         url: 'https://images.pexels.com/photos/458766/pexels-photo-458766.jpeg?auto=compress&cs=tinysrgb&h=350',
         type: 'image',
       }, {

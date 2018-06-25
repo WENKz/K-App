@@ -8,12 +8,13 @@ import { FeedObject } from '../_models/FeedObject';
 })
 export class FeedObjectComponent implements OnInit {
 
-  index: number = 0;
+  index: number;
   @Input() feedObject: FeedObject;
 
   constructor() { }
 
   ngOnInit() {
+    this.index = 0;
   }
 
   getFeedObjectCat(): String {
@@ -30,5 +31,11 @@ export class FeedObjectComponent implements OnInit {
 
   decrementeIndex() {
     this.index = this.index - 1;
+  }
+
+  checkMedia(type: String) {
+    console.log(this.feedObject.medias[this.index]);
+    console.log(this.feedObject.medias[this.index].type === type);
+    return this.feedObject.medias[this.index].type === type;
   }
 }

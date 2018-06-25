@@ -21,7 +21,14 @@
         <mat-icon>keyboard_arrow_right</mat-icon>
       </button>
     </div>
-    <img mat-card-image [src]="getImageSource()">
+    <img *ngIf="feedObject.medias[index].type === 'image'" mat-card-image [src]="getImageSource()">
+    <div fxLayoutAlign="center" *ngIf="checkMedia('video')" class="video-container">
+      <vg-player fxLayout="column">
+        <video fxFlex="200px" [vgMedia]="media" #media id="singleVideo" preload="auto" controls>
+          <source [src]="getImageSource()" type="video/mp4">
+        </video>
+      </vg-player>
+    </div>
     <mat-card-content>
       <p>
         {{ feedObject.content }}

@@ -2,12 +2,10 @@
 	<div fxLayoutAlign="center" *ngIf="!isConnected()">
 		<mat-card fxFlex class="max-width">
 			<mat-card-content fxLayout="column" fxLayoutAlign="center center">
-				<div>
+				<p class="presentation-link">
 					Mais qu'est ce que la K-Fêt de l'INSA Lyon ?
-				</div>
-				<div>
 					Check la <span class="link" routerLink="/presentation">page de présentation</span>!
-				</div>				
+				</p>				
 			</mat-card-content>
 		</mat-card>
 	</div>
@@ -32,8 +30,8 @@
 		</div> 
 	</div>
 	<div fxLayoutAlign="center">
-		<div class="max-width" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="20px grid" fxLayoutAlign="space-between center">
-			<app-feed-object fxFlex.gt-xs="50%" fxFlex.gt-md="33%"  [feedObject]="feedObject" *ngFor="let feedObject of feedObjects"></app-feed-object>
+		<div class="max-width" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="20px" fxLayoutGap.gt-xs="20px grid" fxLayoutAlign="stretch" fxLayoutAlign.gt-xs="space-between center">
+			<app-feed-object fxFlex.sm="50%" fxFlex.md="50%" fxFlex.gt-md="33%" [feedObject]="feedObject" *ngFor="let feedObject of feedObjects"></app-feed-object>
 		</div>
 	</div>
 </div>

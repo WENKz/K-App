@@ -48,6 +48,7 @@
     "ng-pick-datetime": "^6.0.4",
     "ngx-permissions": "^5.0.0",
     "rxjs": "^6.2.0",
+    "videogular2": "^6.2.2",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

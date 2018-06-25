@@ -10,6 +10,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // Libraries
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { ReCaptchaModule } from 'angular2-recaptcha';
+import { VgCoreModule } from 'videogular2/core';
+import { VgControlsModule } from 'videogular2/controls';
+import { VgOverlayPlayModule } from 'videogular2/overlay-play';
+import { VgBufferingModule } from 'videogular2/buffering';
 
 // Routes
 import { routing } from './app.routing';
@@ -174,6 +178,10 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     ReactiveFormsModule,
     NgxPermissionsModule.forRoot(),
     ReCaptchaModule,
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule,
   ],
   bootstrap: [AppComponent],
   providers: [
