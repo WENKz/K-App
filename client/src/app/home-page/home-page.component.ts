@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../_services';
-import { ConnectedUser } from '../_models';
+import { AuthService, FeedService } from '../_services';
+import { ConnectedUser, FeedObject } from '../_models';
 import * as moment from 'moment';
 
 @Component({
@@ -11,12 +11,17 @@ import * as moment from 'moment';
 export class HomePageComponent implements OnInit {
 
   private currentUser: ConnectedUser;
+  feedObjects: FeedObject[];
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+              private feedService: FeedService) { }
 
   ngOnInit(): void {
     this.authService.$currentUser.subscribe((curUser) => {
       this.currentUser = curUser;
+    });
+    this.feedService.get().subscribe((feedObjects) => {
+      this.feedObjects = feedObjects;
     });
   }
 

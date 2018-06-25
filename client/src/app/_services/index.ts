@@ -12,3 +12,4 @@ export * from './me.service';
 export * from './contact.service';
 export * from './loader.service';
 export * from './task.service';
+export * from './feed.service';

@@ -66,7 +66,7 @@ import { KommissionViewComponent } from './kommissions/view/kommission-view.comp
 import { TemplateEditComponent } from './templates/edit/template-edit.component';
 import { TaskEditNewDialogComponent } from './tasks/edit-new/task-edit-new.component';
 import { TaskViewDialogComponent } from './tasks/view/task-view.component';
-import { FeedComponent } from './feed/feed.component';
+import { FeedObjectComponent } from './feed-object/feed-object.component';
 import { PresentationComponent } from './presentation/presentation.component';
 
 // Services
@@ -74,7 +74,7 @@ import {
   AuthService, BarmanService, ContactService,
   KommissionService, LoaderService, MemberService, MeService, PermissionService,
   RoleService, ServiceService, SpecialAccountService, TaskService, TemplateService, ToasterService,
-} from './_services';
+  FeedService } from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
@@ -153,7 +153,7 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     TaskViewDialogComponent,
     TaskEditNewDialogComponent,
     MyTasksComponent,
-    FeedComponent,
+    FeedObjectComponent,
     PresentationComponent,
   ],
   entryComponents: [
@@ -194,6 +194,7 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     EditGuard,
     ActiveGuard,
     DatePipe,
+    FeedService,
     {
       provide: LOCALE_ID, useValue: 'fr',
     },

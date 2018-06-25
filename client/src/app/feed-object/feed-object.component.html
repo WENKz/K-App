@@ -1,0 +1,20 @@
+<mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ feedObject.title }}</mat-card-title>
+      <mat-card-subtitle>
+        {{ getFeedObjectCat() }} - 
+        <span class="first-letter-uppercase">
+          {{ feedObject.date | date:'EEEE d LLLL' }}
+        </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [src]="feedObject.medias[0].url">
+    <mat-card-content>
+      <p>
+        {{ feedObject.content }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions fxLayoutAlign="end">
+      <a mat-button *ngIf="feedObject.openLink" [href]="feedObject.openLink" target="_blank">Ouvrir</a>
+    </mat-card-actions>
+</mat-card>

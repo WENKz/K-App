@@ -31,5 +31,9 @@
 			</div>
 		</div> 
 	</div>
-	<app-feed></app-feed>
+	<div fxLayoutAlign="center">
+		<div class="max-width" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="10px grid" fxLayoutAlign="space-between stretch">
+			<app-feed-object fxFlex.gt-xs="50%" fxFlex.gt-md="33%" [feedObject]="feedObject" *ngFor="let feedObject of feedObjects"></app-feed-object>
+		</div>
+	</div>
 </div>
