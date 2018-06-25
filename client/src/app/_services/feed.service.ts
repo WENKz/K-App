@@ -21,6 +21,9 @@ export class FeedService {
       medias: [{
         url: 'https://i.imgur.com/y2ejS3S.jpg',
         type: 'image',
+      }, {
+        url: 'https://images.pexels.com/photos/458766/pexels-photo-458766.jpeg?auto=compress&cs=tinysrgb&h=350',
+        type: 'image',
       }],
       openLink: 'https://i.imgur.com/y2ejS3S.jpg',
       categories: [{
@@ -38,6 +41,9 @@ export class FeedService {
       isFacebook: false,
       medias: [{
         url: 'https://images.pexels.com/photos/458766/pexels-photo-458766.jpeg?auto=compress&cs=tinysrgb&h=350',
+        type: 'image',
+      }, {
+        url: 'https://i.imgur.com/y2ejS3S.jpg',
         type: 'image',
       }],
       openLink: 'https://images.pexels.com/photos/458766/pexels-photo-458766.jpeg?auto=compress&cs=tinysrgb&h=350',

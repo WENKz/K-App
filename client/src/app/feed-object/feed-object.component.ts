@@ -8,6 +8,7 @@ import { FeedObject } from '../_models/FeedObject';
 })
 export class FeedObjectComponent implements OnInit {
 
+  index: number = 0;
   @Input() feedObject: FeedObject;
 
   constructor() { }
@@ -19,4 +20,15 @@ export class FeedObjectComponent implements OnInit {
     return this.feedObject.categories.map(c => c.name).join(', ');
   }
 
+  getImageSource() {
+    return this.feedObject.medias[this.index].url;
+  }
+
+  incrementeIndex() {
+    this.index = this.index + 1;
+  }
+
+  decrementeIndex() {
+    this.index = this.index - 1;
+  }
 }
