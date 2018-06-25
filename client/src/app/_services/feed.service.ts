@@ -16,7 +16,7 @@ export class FeedService {
       createdAt: new Date(),
       updatedAt: new Date(),
       date: new Date(),
-      pin: false,
+      pin: true,
       isFacebook: false,
       medias: [{
         url: 'https://i.imgur.com/y2ejS3S.jpg',

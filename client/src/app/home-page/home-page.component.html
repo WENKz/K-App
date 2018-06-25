@@ -25,14 +25,14 @@
 					</mat-card-header>
 				</mat-card>
 			</div>
-			<div *ngIf="currentUser.isBarman()" fxFlex fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
+			<div *ngIf="currentUser.isBarman()" fxFlex fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="20px">
 				<app-my-tasks fxFlex *ngxPermissionsOnly="['task:read']"></app-my-tasks>
 				<app-my-services fxFlex></app-my-services>
 			</div>
 		</div> 
 	</div>
 	<div fxLayoutAlign="center">
-		<div class="max-width" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="10px grid" fxLayoutAlign="space-between stretch">
+		<div class="max-width" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="20px grid" fxLayoutAlign="space-between center">
 			<app-feed-object fxFlex.gt-xs="50%" fxFlex.gt-md="33%" [feedObject]="feedObject" *ngFor="let feedObject of feedObjects"></app-feed-object>
 		</div>
 	</div>

@@ -1,1 +1,9 @@
+@import "~theme.scss";
 
+.pin-image {
+  svg {
+    path {
+      fill: $primary;
+    }
+  }
+}

@@ -21,7 +21,11 @@ export class HomePageComponent implements OnInit {
       this.currentUser = curUser;
     });
     this.feedService.get().subscribe((feedObjects) => {
-      this.feedObjects = feedObjects;
+      this.feedObjects = feedObjects.sort((a, b) => {
+        if (a.pin) return -1;
+        if (b.pin) return 1;
+        return 0;
+      });
     });
   }
 
