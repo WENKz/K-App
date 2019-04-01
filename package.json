@@ -82,6 +82,11 @@
     "sqlite3": "^4.0.6",
     "supertest": "^3.4.2"
   },
+  "dependenciesMeta": {
+    "argon2": {
+      "unplugged": true
+    }
+  },
   "main": "server/index.js",
   "engines": {
     "node": ">=10.0.0"

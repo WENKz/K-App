@@ -1170,7 +1170,7 @@ function $$SETUP_STATE(hydrateRuntimeState) {
           [
             "npm:0.19.3",
             {
-              "packageLocation": "./.yarn/cache/argon2-npm-0.19.3-1e006dadca54de1639d940b9873ffaec7f8929df3ec6239af9645b4648973a7a.zip/node_modules/argon2/",
+              "packageLocation": "./.yarn/unplugged/argon2-npm-0.19.3-1e006dadca54de1639d940b9873ffaec7f8929df3ec6239af9645b4648973a7a/node_modules/argon2/",
               "packageDependencies": [
                 [
                   "argon2",
@@ -21991,6 +21991,7 @@ function wrapAsync(fn) {
 }
 function patchFs(patchedFs, fakeFs) {
     const SYNC_IMPLEMENTATIONS = new Set([
+        `accessSync`,
         `createReadStream`,
         `chmodSync`,
         `copyFileSync`,
@@ -22009,6 +22010,7 @@ function patchFs(patchedFs, fakeFs) {
         `writeFileSync`,
     ]);
     const ASYNC_IMPLEMENTATIONS = new Set([
+        `accessPromise`,
         `chmodPromise`,
         `copyFilePromise`,
         `lstatPromise`,
@@ -22135,6 +22137,14 @@ class NodeFS extends FakeFS_1.FakeFS {
             this.realFs.exists(NodeFS.fromPortablePath(p), resolve);
         });
     }
+    accessSync(p, mode) {
+        return this.realFs.accessSync(NodeFS.fromPortablePath(p), mode);
+    }
+    async accessPromise(p, mode) {
+        return await new Promise((resolve, reject) => {
+            this.realFs.access(NodeFS.fromPortablePath(p), mode, this.makeCallback(resolve, reject));
+        });
+    }
     existsSync(p) {
         return this.realFs.existsSync(NodeFS.fromPortablePath(p));
     }
@@ -22229,12 +22239,14 @@ class NodeFS extends FakeFS_1.FakeFS {
         return this.realFs.rmdirSync(NodeFS.fromPortablePath(p));
     }
     async symlinkPromise(target, p) {
+        const type = target.endsWith(`/`) ? `dir` : `file`;
         return await new Promise((resolve, reject) => {
-            this.realFs.symlink(NodeFS.fromPortablePath(target), NodeFS.fromPortablePath(p), this.makeCallback(resolve, reject));
+            this.realFs.symlink(NodeFS.fromPortablePath(target.replace(/\/+$/, ``)), NodeFS.fromPortablePath(p), type, this.makeCallback(resolve, reject));
         });
     }
     symlinkSync(target, p) {
-        return this.realFs.symlinkSync(NodeFS.fromPortablePath(target), NodeFS.fromPortablePath(p));
+        const type = target.endsWith(`/`) ? `dir` : `file`;
+        return this.realFs.symlinkSync(NodeFS.fromPortablePath(target.replace(/\/+$/, ``)), NodeFS.fromPortablePath(p), type);
     }
     async readFilePromise(p, encoding) {
         return await new Promise((resolve, reject) => {
@@ -22622,6 +22634,12 @@ class AliasFS extends FakeFS_1.FakeFS {
     existsSync(p) {
         return this.baseFs.existsSync(p);
     }
+    async accessPromise(p, mode) {
+        return await this.baseFs.accessPromise(p, mode);
+    }
+    accessSync(p, mode) {
+        return this.baseFs.accessSync(p, mode);
+    }
     async statPromise(p) {
         return await this.baseFs.statPromise(p);
     }
@@ -22779,6 +22797,12 @@ class CwdFS extends FakeFS_1.FakeFS {
     }
     existsSync(p) {
         return this.baseFs.existsSync(this.fromCwdPath(p));
+    }
+    async accessPromise(p, mode) {
+        return await this.baseFs.accessPromise(this.fromCwdPath(p), mode);
+    }
+    accessSync(p, mode) {
+        return this.baseFs.accessSync(this.fromCwdPath(p), mode);
     }
     async statPromise(p) {
         return await this.baseFs.statPromise(this.fromCwdPath(p));
@@ -22938,6 +22962,12 @@ class JailFS extends FakeFS_1.FakeFS {
     existsSync(p) {
         return this.baseFs.existsSync(this.fromJailedPath(p));
     }
+    async accessPromise(p, mode) {
+        return await this.baseFs.accessPromise(this.fromJailedPath(p), mode);
+    }
+    accessSync(p, mode) {
+        return this.baseFs.accessSync(this.fromJailedPath(p), mode);
+    }
     async statPromise(p) {
         return await this.baseFs.statPromise(this.fromJailedPath(p));
     }
@@ -23095,6 +23125,12 @@ class PosixFS extends FakeFS_1.FakeFS {
     }
     existsSync(p) {
         return this.baseFs.existsSync(NodeFS_1.NodeFS.toPortablePath(p));
+    }
+    async accessPromise(p, mode) {
+        return await this.baseFs.accessPromise(NodeFS_1.NodeFS.toPortablePath(p), mode);
+    }
+    accessSync(p, mode) {
+        return this.baseFs.accessSync(NodeFS_1.NodeFS.toPortablePath(p), mode);
     }
     async statPromise(p) {
         return await this.baseFs.statPromise(NodeFS_1.NodeFS.toPortablePath(p));
@@ -23317,6 +23353,11 @@ class ZipFS extends FakeFS_1.FakeFS {
                 continue;
             const p = path_1.posix.resolve(`/`, raw);
             this.registerEntry(p, t);
+            // If the raw path is a directory, register it
+            // to prevent empty folder being skipped
+            if (raw.endsWith('/')) {
+                this.registerListing(p);
+            }
         }
         this.ready = true;
     }
@@ -23419,6 +23460,15 @@ class ZipFS extends FakeFS_1.FakeFS {
             return false;
         }
         return this.entries.has(resolvedP) || this.listings.has(resolvedP);
+    }
+    async accessPromise(p, mode) {
+        return this.accessSync(p, mode);
+    }
+    accessSync(p, mode) {
+        const resolvedP = this.resolveFilename(`access '${p}'`, p);
+        if (!this.entries.has(resolvedP) && !this.listings.has(resolvedP)) {
+            throw Object.assign(new Error(`ENOENT: no such file or directory, access '${p}'`), { code: `ENOENT` });
+        }
     }
     async statPromise(p) {
         return this.statSync(p);
@@ -23600,14 +23650,9 @@ class ZipFS extends FakeFS_1.FakeFS {
     }
     chmodSync(p, mask) {
         const resolvedP = this.resolveFilename(`chmod '${p}'`, p, false);
-        if (this.listings.has(resolvedP)) {
-            if ((mask & 0o755) === 0o755) {
-                return;
-            }
-            else {
-                throw Object.assign(new Error(`EISDIR: illegal operation on a directory, chmod '${p}'`), { code: `EISDIR` });
-            }
-        }
+        // We silently ignore chmod requests for directories
+        if (this.listings.has(resolvedP))
+            return;
         const entry = this.entries.get(resolvedP);
         if (entry === undefined)
             throw new Error(`Unreachable`);
@@ -24054,6 +24099,20 @@ class ZipOpenFS extends FakeFS_1.FakeFS {
             return this.baseFs.existsSync(p);
         }, (zipFs, { subPath }) => {
             return zipFs.existsSync(subPath);
+        });
+    }
+    async accessPromise(p, mode) {
+        return await this.makeCallPromise(p, async () => {
+            return await this.baseFs.accessPromise(p, mode);
+        }, async (zipFs, { archivePath, subPath }) => {
+            return await zipFs.accessPromise(subPath, mode);
+        });
+    }
+    accessSync(p, mode) {
+        return this.makeCallSync(p, () => {
+            return this.baseFs.accessSync(p, mode);
+        }, (zipFs, { subPath }) => {
+            return zipFs.accessSync(subPath, mode);
         });
     }
     async statPromise(p) {
@@ -24773,11 +24832,17 @@ function makeApi(runtimeState, opts) {
     // Used for compatibility purposes - cf setupCompatibilityLayer
     const fallbackLocators = [topLevelLocator];
     if (opts.compatibilityMode) {
-        // ESLint currently doesn't have any portable way for shared configs to specify their own
-        // plugins that should be used (https://github.com/eslint/eslint/issues/10125). This will
-        // likely get fixed at some point, but it'll take time and in the meantime we'll just add
-        // additional fallback entries for common shared configs.
-        for (const name of [`react-scripts`]) {
+        // ESLint currently doesn't have any portable way for shared configs to
+        // specify their own plugins that should be used (cf issue #10125). This
+        // will likely get fixed at some point but it'll take time, so in the
+        // meantime we'll just add additional fallback entries for common shared
+        // configs.
+        // Similarly, Gatsby generates files within the `public` folder located
+        // within the project, but doesn't pre-resolve the `require` calls to use
+        // its own dependencies. Meaning that when PnP see a file from the `public`
+        // folder making a require, it thinks that your project forgot to list one
+        // of your dependencies.
+        for (const name of [`react-scripts`, `gatsby`]) {
             const packageStore = runtimeState.packageRegistry.get(name);
             if (packageStore) {
                 for (const reference of packageStore.keys()) {
@@ -24796,6 +24861,52 @@ function makeApi(runtimeState, opts) {
      * the $$DYNAMICALLY_GENERATED_CODE function.
      */
     const { ignorePattern, packageRegistry, packageLocatorsByLocations, packageLocationLengths, } = runtimeState;
+    /**
+     * Allows to print useful logs just be setting a value in the environment
+     */
+    function makeLogEntry(name, args) {
+        return {
+            fn: name,
+            args: args,
+            error: null,
+            result: null,
+        };
+    }
+    function maybeLog(name, fn) {
+        if (opts.allowDebug === false)
+            return fn;
+        const level = Number(process.env.PNP_DEBUG_LEVEL);
+        if (Number.isFinite(level)) {
+            if (level >= 2) {
+                return (...args) => {
+                    const logEntry = makeLogEntry(name, args);
+                    try {
+                        return logEntry.result = fn(...args);
+                    }
+                    catch (error) {
+                        throw logEntry.error = error;
+                    }
+                    finally {
+                        console.error(logEntry);
+                    }
+                };
+            }
+            else if (level >= 1) {
+                return (...args) => {
+                    try {
+                        return fn(...args);
+                    }
+                    catch (error) {
+                        const logEntry = makeLogEntry(name, args);
+                        logEntry.error = error;
+                        console.error(logEntry);
+                        throw error;
+                    }
+                };
+            }
+        }
+        return fn;
+    }
     /**
      * Returns information about a package in a safe way (will throw if they cannot be retrieved)
      */
@@ -25155,7 +25266,7 @@ function makeApi(runtimeState, opts) {
             path = fslib_1.NodeFS.toPortablePath(path);
             return findPackageLocator(path);
         },
-        resolveToUnqualified: (request, issuer, opts) => {
+        resolveToUnqualified: maybeLog(`resolveToUnqualified`, (request, issuer, opts) => {
             request = fslib_1.NodeFS.toPortablePath(request);
             if (issuer !== null)
                 issuer = fslib_1.NodeFS.toPortablePath(issuer);
@@ -25163,12 +25274,12 @@ function makeApi(runtimeState, opts) {
             if (resolution === null)
                 return null;
             return fslib_1.NodeFS.fromPortablePath(resolution);
-        },
-        resolveUnqualified: (unqualifiedPath, opts) => {
+        }),
+        resolveUnqualified: maybeLog(`resolveUnqualified`, (unqualifiedPath, opts) => {
             unqualifiedPath = fslib_1.NodeFS.fromPortablePath(unqualifiedPath);
             return fslib_1.NodeFS.fromPortablePath(resolveUnqualified(unqualifiedPath, opts));
-        },
-        resolveRequest: (request, issuer, opts) => {
+        }),
+        resolveRequest: maybeLog(`resolveRequest`, (request, issuer, opts) => {
             request = fslib_1.NodeFS.toPortablePath(request);
             if (issuer !== null)
                 issuer = fslib_1.NodeFS.toPortablePath(issuer);
@@ -25176,7 +25287,7 @@ function makeApi(runtimeState, opts) {
             if (resolution === null)
                 return null;
             return fslib_1.NodeFS.fromPortablePath(resolution);
-        },
+        }),
     };
 }
 exports.makeApi = makeApi;
