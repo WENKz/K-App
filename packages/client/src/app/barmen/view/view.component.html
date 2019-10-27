@@ -12,11 +12,26 @@
         <mat-icon>delete</mat-icon>
       </button>
     </mat-card-header>
-    <mat-card-content>
-      <mat-list>
+    <mat-card-content fxLayout="row wrap">
+      <mat-list fxFlex>
+        <h3 mat-subheader>Statistiques</h3>
+        <mat-list-item>
+          <h4 matLine>Nombre d'heures de services</h4>
+          <p matLine>{{barman?.statistics?.hoursOfService || 'Aucune donnée'}}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Barmen avec qui {{barman.nickname}} a servi le plus longtemps</h4>
+          <p matLine>NgFor barmen</p>
+        </mat-list-item>
+        <mat-list-item *ngIf="barman.isActive()">
+          <h4 matLine>Barmen avec qui {{barman.nickname}} a servi le moins longtemps</h4>
+          <p matLine>NgFor barmen</p>
+        </mat-list-item>
+      </mat-list>
+      <mat-list fxFlex>
         <h3 mat-subheader>Informations</h3>
         <mat-list-item>
-          <h4 matLine>Surnom barman</h4>
+          <h4 matLine>Surnom barman:</h4>
           <p matLine>{{barman?.nickname}}</p>
         </mat-list-item>
         <mat-list-item>
@@ -57,7 +72,8 @@
             </ng-template>
           </p>
         </mat-list-item>
-        <mat-divider></mat-divider>
+      </mat-list>
+      <mat-list fxFlex>
         <h3 mat-subheader>Kommission(s)</h3>
         <div *ngIf="barman.kommissions?.length !== 0; else elseBlock">
           <mat-list-item *ngFor="let kommission of barman.kommissions">
@@ -69,7 +85,8 @@
             <p>Aucune kommission</p>
           </mat-list-item>
         </ng-template>
-        <mat-divider></mat-divider>
+      </mat-list>
+      <mat-list fxFlex>
         <h3 mat-subheader>Role(s)</h3>
         <div *ngIf="barman.roles?.length !== 0; else elseTemplate">
           <mat-list-item *ngFor="let role of barman.roles">
@@ -81,7 +98,8 @@
             <p>Aucun role</p>
           </mat-list-item>
         </ng-template>
-        <mat-divider></mat-divider>
+      </mat-list>
+      <mat-list fxFlex>
         <h3 mat-subheader>Dates</h3>
         <mat-list-item>
           <h4 matLine>Date d'entrée</h4>

@@ -20,8 +20,9 @@ export class ViewComponent implements OnInit {
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.route.data.subscribe((data: { barman: Barman }) => {
+    this.route.data.subscribe(async (data: { barman: Barman }) => {
       this.barman = data.barman;
+      this.barman.statistics = await this.barmanService.getStatistics(this.barman.id);
     });
   }
 

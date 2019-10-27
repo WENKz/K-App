@@ -16,7 +16,7 @@ const FACEBOOK_PATTERN =
   /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w\-]*\/)*([\w\-.]+)(\/)?/i;
 
 const BASE_BARMAN = new Barman({
-  connection: {}, roles: [], kommissions: [], godFather: {}, services: [],
+  connection: {}, roles: [], kommissions: [], godFather: new Barman(), services: [],
 });
 
 export function getBarmanModel(barmen: Promise<Barman[]>,

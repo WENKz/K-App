@@ -1,4 +1,5 @@
 import { AssociationChanges, ConnectionInformation, Kommission, Role, Service } from '.';
+import {BarmanStatistics} from "./BarmanStatistics";
 
 export class Barman {
 
@@ -16,6 +17,7 @@ export class Barman {
 
     // Associations
 
+  statistics: BarmanStatistics;
   connection: ConnectionInformation;
   godFather: Barman;
   kommissions: Kommission[];
@@ -24,15 +26,15 @@ export class Barman {
 
   _embedded: {
     godFather?: number;
-    kommissions?: AssociationChanges,
-    roles?: AssociationChanges,
+    kommissions?: AssociationChanges;
+    roles?: AssociationChanges;
   };
 
   public isActive(): boolean {
     return !this.leaveAt;
   }
 
-  constructor(values: Object = {}) {
+  constructor(values: Partial<Barman> = {}) {
     Object.assign(this, values);
   }
 }

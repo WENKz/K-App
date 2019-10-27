@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Barman, Service, Task } from '../../shared/models';
 import { toURL } from './api-utils';
+import {BarmanStatistics} from "../../shared/models/BarmanStatistics";
 
 @Injectable()
 export class BarmanService {
@@ -13,7 +14,8 @@ export class BarmanService {
   }
 
   getById(id: number): Promise<Barman> {
-    return this.http.get<Barman>(toURL(`v1/barmen/${id}`)).toPromise();
+    return this.http.get<Barman>(toURL(`v1/barmen/${id}`)).toPromise()
+      .then((b) => new Barman(b));
   }
 
   getServices(id: number, start: Date, end: Date): Promise<Service[]> {
@@ -27,6 +29,11 @@ export class BarmanService {
 
   getTasks(): Promise<Task[]> {
     return this.http.get<Task[]>(toURL('v1/me/tasks')).toPromise();
+  }
+
+  getStatistics(id: number): Promise<BarmanStatistics> {
+    return this.http.get<BarmanStatistics>(toURL(`v1/barmen/${id}/statistics`)).toPromise()
+      .then((res) => new BarmanStatistics(res));
   }
 
   create(barman: Barman): Promise<Barman> {
