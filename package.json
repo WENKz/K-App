@@ -39,6 +39,12 @@
     "node": ">=12.0.0"
   },
   "dependenciesMeta": {
+    "@angular-devkit/architect": {
+      "unplugged": true
+    },
+    "@angular-devkit/build-angular": {
+      "unplugged": true
+    },
     "@shelf/jest-mongodb": {
       "unplugged": true
     }
