@@ -21,14 +21,12 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:back": "yarn workspace k-app-server run dev:back",
     "dev:front": "yarn workspace k-app-client start",
     "cli": "yarn workspace k-app-cli run cli",
     "test:lint": "eslint .",
     "test:integration": "true",
     "test:unit": "yarn workspace k-app-server run test"
   },
-  "dependencies": {},
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",
@@ -39,5 +37,10 @@
   },
   "engines": {
     "node": ">=12.0.0"
+  },
+  "dependenciesMeta": {
+    "@shelf/jest-mongodb": {
+      "unplugged": true
+    }
   }
 }

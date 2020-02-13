@@ -50,6 +50,7 @@
     "jest": "^25.1.0",
     "jest-environment-node": "^25.1.0",
     "jest-extended": "^0.11.5",
+    "mongodb": "^3.5.3",
     "ngrok": "^3.2.7",
     "nodemon": "^2.0.2",
     "sqlite3": "^4.1.1",

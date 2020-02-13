@@ -54,6 +54,8 @@ build/Release
 
 # Dependency directories
 node_modules/
+.yarn/unplugged
+.yarn/build-state.yml
 
 # dotenv environment variables file
 .env
